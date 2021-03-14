@@ -1,8 +1,28 @@
 import {TranslatorConfig} from "./translatorConfig"
 
-export interface TranslatorCore {
-    createCode(translatorConfig: TranslatorConfig): void
-    codeName: string
+export enum TranslatorType {
+    mini,
+    web,
+    phoneWeb
 }
 
+export interface TranslatorTypeList {
+    name: string
+    type: TranslatorType
+}
+
+
+export interface TranslatorCore {
+    selectedType: TranslatorType | null
+
+    typeList: TranslatorTypeList[]
+
+    getTranslatorType(): TranslatorTypeList[]
+
+    selectTranslatorType(type: TranslatorType): void
+
+    createCode(translatorConfig: TranslatorConfig): void
+
+    getNowSelectedType(): TranslatorType | null
+}
 

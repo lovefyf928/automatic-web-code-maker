@@ -1,8 +1,10 @@
-import {TranslatorCore} from "./translator"
-import {TranslatorConfig} from "@/core/translator/translatorConfig";
+import {TranslatorCore, TranslatorType, TranslatorTypeList} from "@/core/translator/translator.ts"
+import {TranslatorConfig} from "@/core/translator/translatorConfig.ts";
 
 
 export {
     TranslatorCore,
-    TranslatorConfig
+    TranslatorConfig,
+    TranslatorType,
+    TranslatorTypeList
 }

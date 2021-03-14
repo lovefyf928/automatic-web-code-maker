@@ -1,8 +1,13 @@
 import {TranslatorService} from "@/service/translatorService/translatorService";
 
+
 interface IndexAppInterface {
-    makeCode(): void
+    translatorService: TranslatorService
     context: Vue
+    getSelectTypes(): any[]
+    enterBox(key: number, listBox: any[]): void
+    outBox(key: number, listBox: any[]): void
+    jumpToMakePage(typeObj: any): void
 }
 
 export class IndexApplication implements IndexAppInterface{
@@ -11,8 +16,29 @@ export class IndexApplication implements IndexAppInterface{
     }
     context: Vue
 
-    makeCode() {
-        let translatorService = new TranslatorService("wodj");
-        translatorService.createCode({context: this.context});
+    translatorService: TranslatorService = new TranslatorService();
+
+    jumpToMakePage(typeObj: any): void {
+        this.context.$router.push({name: "MakePage", params: typeObj});
     }
+
+    getSelectTypes(): any[] {
+        let list: any[] = this.translatorService.getTranslatorType()
+        for (let i = 0; i < list.length; i ++) {
+            list[i].menter = false;
+        }
+        return list
+    }
+
+    enterBox(key: number, listBox: any[]): void {
+        listBox[key].menter = true;
+        this.context.$forceUpdate();
+    }
+
+    outBox(key: number, listBox: any[]): void {
+        listBox[key].menter = false;
+        this.context.$forceUpdate();
+    }
+
+
 }

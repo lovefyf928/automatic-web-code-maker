@@ -8,6 +8,11 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'Index',
     component: () => import("../views/Index.vue")
+  },
+  {
+    path: "/make-page",
+    name: "MakePage",
+    component: () => import("../views/MakePage.vue")
   }
 ]
 
