@@ -9,6 +9,7 @@ interface MakePageAppInterface {
     cache: Cache
     context: Vue
     getSelectedType(): void
+    setComponentAttribut(refs: string, attribute: string, val: any): void
 }
 
 export class MakePageApplication implements MakePageAppInterface{
@@ -35,6 +36,12 @@ export class MakePageApplication implements MakePageAppInterface{
     getSelectedType(): TranslatorType | null {
         return this.translatorService.getNowSelectedType()
     }
+
+    setComponentAttribut(refs: string, attribute: string, val: any): void {
+        let nowRefs: any = this.context.$refs[refs]
+        nowRefs.setOptions(attribute, val);
+    }
+
 
 }
 
