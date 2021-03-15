@@ -6,21 +6,23 @@
 
 <script lang="ts">
 import {MakePageApplication} from "@/application/makePage/makePage";
+import Vue from "vue";
+import Component from "vue-class-component"
 
-export default {
-  name: "MakePage",
-  data() {
-    return {
-      makePageApplication: new MakePageApplication(this)
-    }
-  },
+
+
+
+@Component({
+  name: "MakePage"
+})
+export default class MakePage extends Vue {
+  private makePageApplication: MakePageApplication = new MakePageApplication(this)
+
   mounted() {
     this.makePageApplication.setSelectedType();
-  },
-  methods: {
-    getType() {
-      console.log(this.makePageApplication.getSelectedType());
-    }
+  }
+  private getType() {
+    console.log(this.makePageApplication.getSelectedType());
   }
 }
 </script>

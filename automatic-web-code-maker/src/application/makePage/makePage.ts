@@ -8,7 +8,7 @@ interface MakePageAppInterface {
     translatorService: TranslatorService
     cache: Cache
     context: Vue
-    getSelectedType(): TranslatorType | null
+    getSelectedType(): void
 }
 
 export class MakePageApplication implements MakePageAppInterface{

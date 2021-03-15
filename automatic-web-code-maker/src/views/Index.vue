@@ -9,28 +9,30 @@
 <script lang="ts">
 
 import {IndexApplication} from "@/application/index";
+import Vue from "vue";
+import Component from "vue-class-component"
 
-export default {
+
+@Component({
   name: "Index",
-  data(){
-    return {
-      indexApplication: new IndexApplication(this),
-      typeList: []
-    }
-  },
+})
+export default class Index extends Vue {
+  private indexApplication: IndexApplication = new IndexApplication(this);
+  private typeList: any[] = [];
+
+
+
   mounted() {
     this.typeList = this.indexApplication.getSelectTypes()
-  },
-  methods: {
-    handleClick(item) {
-      this.indexApplication.jumpToMakePage(item);
-    },
-    handleMEnter(key) {
-      this.indexApplication.enterBox(key, this.typeList)
-    },
-    handleMOut(key) {
-      this.indexApplication.outBox(key, this.typeList)
-    }
+  }
+  private handleClick(item: object) {
+    this.indexApplication.jumpToMakePage(item);
+  }
+  private handleMEnter(key: number) {
+    this.indexApplication.enterBox(key, this.typeList)
+  }
+  private handleMOut(key: number) {
+    this.indexApplication.outBox(key, this.typeList)
   }
 }
 </script>
