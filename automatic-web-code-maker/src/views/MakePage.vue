@@ -8,6 +8,7 @@
       <button @click="handleClick">clickTest</button>
     </div>
     <div id="page-area" >
+
     </div>
   </div>
 </template>

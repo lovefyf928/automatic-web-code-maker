@@ -28,10 +28,11 @@ export class CustomComponents extends Vue implements CustomComponentsInterface{
     public setOptions(cssAttribute: string, val: any) {
         this.styleString = "";
         this.cssObj[cssAttribute] = val;
-        for (let key in this.cssObj) {
-            this.styleString += `${key}: ${this.cssObj[key]};`
-        }
-        console.log(this.styleString);
+        // for (let key in this.cssObj) {
+        //     this.styleString += `${key}: ${this.cssObj[key]};`
+        // }
+        this.$forceUpdate();
+        console.log(this.cssObj);
     }
 
 

@@ -7,8 +7,12 @@ export function MyInput() {
         name: "MyInput",
         data() {
             return {
-                cc: new CustomComponents()
+                cc: new CustomComponents(),
+                styleObj: {}
             }
+        },
+        mounted() {
+            this.styleObj = this.cc.cssObj
         },
         render(createElement, hack): VNode {
             return createElement(
@@ -17,7 +21,7 @@ export function MyInput() {
                     createElement(
                         "input",
                         {
-                            "style": this.cc.styleString
+                            style: this.styleObj
                         }
                     )
                 ]
