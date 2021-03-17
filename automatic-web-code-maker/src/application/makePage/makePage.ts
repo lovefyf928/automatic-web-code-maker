@@ -1,6 +1,10 @@
 import {TranslatorType, TranslatorTypeList} from "@/core/translator";
 import {TranslatorService} from "@/service/translatorService/translatorService";
 import {Cache} from "@/infrastructure/cache/cache";
+import {
+    CustomComponentsConfig,
+    CustomComponentsIconInterface
+} from "@/infrastructure/customComponents/customComponents";
 
 
 interface MakePageAppInterface {
@@ -10,6 +14,11 @@ interface MakePageAppInterface {
     context: Vue
     getSelectedType(): void
     setComponentAttribut(refs: string, attribute: string, val: any): void
+
+    customComponentsConfig: CustomComponentsConfig
+
+
+    customComponentsContext: any
 }
 
 export class MakePageApplication implements MakePageAppInterface{
@@ -17,8 +26,10 @@ export class MakePageApplication implements MakePageAppInterface{
         this.context = context;
     }
     translatorService: TranslatorService = new TranslatorService();
+    customComponentsConfig: CustomComponentsConfig = new CustomComponentsConfig();
     cache: Cache = new Cache();
     context: Vue
+    customComponentsContext: any = {};
 
     setSelectedType() {
         if (this.context.$route.params.type !== undefined) {
@@ -37,10 +48,27 @@ export class MakePageApplication implements MakePageAppInterface{
         return this.translatorService.getNowSelectedType()
     }
 
-    setComponentAttribut(refs: string, attribute: string, val: any): void {
-        let nowRefs: any = this.context.$refs[refs]
-        nowRefs.setOptions(attribute, val);
+    setComponentAttribut(context: any, attribute: string, val: any): void {
+        // let nowRefs: any = this.context.$refs[refs]
+        // nowRefs.setOptions(attribute, val);
+        // context.cc.setOptions(attribute, val);
+        let componentCtx =this.customComponentsContext[context]
+        componentCtx.cc.setOptions(attribute, val)
     }
+
+
+    getAllComponentList(): CustomComponentsIconInterface[] {
+
+        return this.customComponentsConfig.getComponentConfig();
+    }
+
+
+    loadComponent(id: number, text: string) {
+        this.customComponentsContext[text] = this.customComponentsConfig.getComponentVNodeById(id)
+        return this.customComponentsContext[text];
+
+    }
+
 
 
 }
