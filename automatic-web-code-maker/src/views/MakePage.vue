@@ -2,13 +2,13 @@
   <div style="width: 100%; display: flex">
     <div class="icon-list">
       <div v-for="tmp in componentsList" class="icon-item">
-        <img @dragend="handleEndDrag($event, tmp)"  @drag="handleDrag" class="icon-img" :src="require('../assets/' + tmp.iconPath)">
+        <img @dragend="handleEndDrag($event, tmp)" class="icon-img" :src="require('../assets/' + tmp.iconPath)">
         <span>{{tmp.text}}</span>
       </div>
-      <button @click="handleClick">clickTest</button>
     </div>
     <div id="page-area" >
-
+      <canvas style="width: 100%; height: 100%; position: absolute; left: 0; top: 0; z-index: 999" :width="makePageApplication.canvasObj.w" :height="makePageApplication.canvasObj.h"></canvas>
+      <div id="mount-box"></div>
     </div>
   </div>
 </template>
@@ -27,52 +27,25 @@ export default class MakePage extends Vue {
   private componentsList: any[] = [];
   private listW: number = 0
 
-  private contextObj = {};
+
 
   mounted() {
     this.listW = window.innerWidth * 0.2 + 40;
     this.makePageApplication.setSelectedType();
-
     this.componentsList = this.makePageApplication.getAllComponentList();
+    this.makePageApplication.getMainContainerWH()
+    window.onresize = () => {
+      this.makePageApplication.getMainContainerWH()
+    }
   }
 
-  handleDrag(e: any) {
-    // console.log(e);
-    // if (e.clientX - this.listW >= 0) {
-    //   console.log("in page area")
-    // }
-  }
 
-  handleClick() {
-    this.makePageApplication.setComponentAttribut("MyInput", "width", "100px")
-    this.makePageApplication.setComponentAttribut("MyInput", "height", "50px")
-
-  }
 
   handleEndDrag(e: any, item: any) {
-    console.log(e);
-    console.log(this.listW);
     if (e.clientX - this.listW >= 0) {
-      this.makePageApplication.loadComponent(item.id, item.text).$mount("#page-area")
-
-
-      // componentsObj[item.text] = this.makePageApplication.loadComponent(item.id)
-      // console.log(componentsObj);
-      // let pa = document.getElementsByClassName("page-area")[0];
-      // console.log(pa);
-      // let myComponent = document.createElement(item.tagName);
-      // myComponent.setAttribute("ref", item.text);
-      // console.log(myComponent);
-      // pa.appendChild(myComponent);
-
-      // const refs: any = this.$refs.MyInput
-
-
-      // const refs: any = this.$refs.pageArea;
-      // refs.appendChild(test.$el);
-      // console.log(refs.);
-
-
+      let nowComponent: Vue = this.makePageApplication.loadComponent(item.id, item.text);
+      nowComponent.$mount("#mount-box")
+      this.makePageApplication.mountDone(e.clientX - this.listW, e.clientY, nowComponent)
     }
   }
 
@@ -80,6 +53,10 @@ export default class MakePage extends Vue {
 </script>
 
 <style scoped>
+
+#page-area{
+  position: relative;
+}
 
 .icon-list{
   width: 20%;
@@ -92,6 +69,7 @@ export default class MakePage extends Vue {
 
 #page-area {
   width: 80%;
+  height: 100%;
 }
 
 .icon-item{

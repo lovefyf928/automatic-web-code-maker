@@ -19,6 +19,21 @@ interface MakePageAppInterface {
 
 
     customComponentsContext: any
+
+    canvasObj: canvasWH
+
+    elementArr: elementObj[]
+}
+
+interface elementObj {
+    nowX: number | undefined
+    nowY: number | undefined
+    context: Vue
+}
+
+interface canvasWH {
+    w: number | undefined
+    h: number | undefined
 }
 
 export class MakePageApplication implements MakePageAppInterface{
@@ -30,6 +45,10 @@ export class MakePageApplication implements MakePageAppInterface{
     cache: Cache = new Cache();
     context: Vue
     customComponentsContext: any = {};
+    canvasObj: canvasWH = {w: 0, h: 0};
+
+    elementArr: elementObj[] = [];
+
 
     setSelectedType() {
         if (this.context.$route.params.type !== undefined) {
@@ -49,11 +68,7 @@ export class MakePageApplication implements MakePageAppInterface{
     }
 
     setComponentAttribut(context: any, attribute: string, val: any): void {
-        // let nowRefs: any = this.context.$refs[refs]
-        // nowRefs.setOptions(attribute, val);
-        // context.cc.setOptions(attribute, val);
-        let componentCtx =this.customComponentsContext[context]
-        componentCtx.cc.setOptions(attribute, val)
+        context.cc.setOptions(attribute, val)
     }
 
 
@@ -67,6 +82,32 @@ export class MakePageApplication implements MakePageAppInterface{
         this.customComponentsContext[text] = this.customComponentsConfig.getComponentVNodeById(id)
         return this.customComponentsContext[text];
 
+    }
+
+    mountDone(x: number, y: number, context: Vue) {
+        let obj: elementObj = {nowX: x, nowY: y, context}
+        this.elementArr.push(obj);
+        let dom: HTMLElement | null = document.getElementById("page-area");
+        let newContainer: HTMLElement = document.createElement("div");
+        newContainer.setAttribute("id", "mount-box");
+        dom?.appendChild(newContainer);
+        this.drawing()
+    }
+
+
+    drawing() {
+        console.log(this.elementArr);
+        let nowCtx = this.elementArr[this.elementArr.length - 1].context
+        this.setComponentAttribut(nowCtx, "position", "absolute");
+        this.setComponentAttribut(nowCtx, "top", this.elementArr[this.elementArr.length - 1].nowY + "px");
+        this.setComponentAttribut(nowCtx, "left", this.elementArr[this.elementArr.length - 1].nowX + "px");
+    }
+
+
+    getMainContainerWH() {
+        let dom: HTMLElement | null = document.getElementById("page-area");
+        this.canvasObj.w = dom?.clientWidth;
+        this.canvasObj.h = dom?.clientHeight;
     }
 
 
