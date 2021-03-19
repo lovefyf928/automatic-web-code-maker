@@ -7,7 +7,8 @@
       </div>
     </div>
     <div id="page-area" >
-      <canvas style="width: 100%; height: 100%; position: absolute; left: 0; top: 0; z-index: 999" :width="makePageApplication.canvasObj.w" :height="makePageApplication.canvasObj.h"></canvas>
+      <canvas id="my-canvas" style="width: 100%; height: 100%; position: absolute; left: 0; top: 0; z-index: 998" :width="makePageApplication.canvasObj.w" :height="makePageApplication.canvasObj.h"></canvas>
+      <canvas @mouseleave="handleML" @mousemove="handleMM" @mouseup="handleMU" @mousedown="handleMD"  id="my-canvasr" style="width: 100%; height: 100%; position: absolute; left: 0; top: 0; z-index: 999" :width="makePageApplication.canvasObj.w" :height="makePageApplication.canvasObj.h"></canvas>
       <div id="mount-box"></div>
     </div>
   </div>
@@ -26,6 +27,8 @@ export default class MakePage extends Vue {
   private makePageApplication: MakePageApplication = new MakePageApplication(this)
   private componentsList: any[] = [];
   private listW: number = 0
+
+  private isDrag = false
 
 
 
@@ -47,6 +50,29 @@ export default class MakePage extends Vue {
       nowComponent.$mount("#mount-box")
       this.makePageApplication.mountDone(e.clientX - this.listW, e.clientY, nowComponent)
     }
+  }
+
+  handleMD(e: any) {
+    console.log(e);
+    this.isDrag = true
+    this.makePageApplication.handleSelect(e.clientX - this.listW, e.clientY)
+
+  }
+
+  handleMU(e: any) {
+    console.log(e);
+    this.isDrag = false;
+  }
+
+
+  handleMM(e: any) {
+    if (this.isDrag) {
+      console.log(e);
+    }
+  }
+
+  handleML() {
+    this.isDrag = false;
   }
 
 }

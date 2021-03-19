@@ -13,7 +13,7 @@ interface MakePageAppInterface {
     cache: Cache
     context: Vue
     getSelectedType(): void
-    setComponentAttribut(refs: string, attribute: string, val: any): void
+    setComponentAttribut(refs: string, attribute: string, val: any): any
 
     customComponentsConfig: CustomComponentsConfig
 
@@ -28,7 +28,24 @@ interface MakePageAppInterface {
 interface elementObj {
     nowX: number | undefined
     nowY: number | undefined
+    cssObj: any
     context: Vue
+}
+
+
+interface pointObj {
+    pointX: number
+    pointY: number
+}
+
+interface canvasObj {
+    selected: boolean
+    rX: number // 矩形的x
+    rY: number // 矩形的y
+    rW: number // 矩形宽
+    rH: number // 矩形高
+    pointArr: pointObj[]
+    elementObj: elementObj
 }
 
 interface canvasWH {
@@ -49,6 +66,8 @@ export class MakePageApplication implements MakePageAppInterface{
 
     elementArr: elementObj[] = [];
 
+    canvasArr: canvasObj[] = [];
+
 
     setSelectedType() {
         if (this.context.$route.params.type !== undefined) {
@@ -67,8 +86,8 @@ export class MakePageApplication implements MakePageAppInterface{
         return this.translatorService.getNowSelectedType()
     }
 
-    setComponentAttribut(context: any, attribute: string, val: any): void {
-        context.cc.setOptions(attribute, val)
+    setComponentAttribut(context: any, attribute: string, val: any): any {
+        return  context.cc.setOptions(attribute, val)
     }
 
 
@@ -85,7 +104,7 @@ export class MakePageApplication implements MakePageAppInterface{
     }
 
     mountDone(x: number, y: number, context: Vue) {
-        let obj: elementObj = {nowX: x, nowY: y, context}
+        let obj: elementObj = {nowX: x, nowY: y, context, cssObj: {}}
         this.elementArr.push(obj);
         let dom: HTMLElement | null = document.getElementById("page-area");
         let newContainer: HTMLElement = document.createElement("div");
@@ -96,11 +115,91 @@ export class MakePageApplication implements MakePageAppInterface{
 
 
     drawing() {
-        console.log(this.elementArr);
-        let nowCtx = this.elementArr[this.elementArr.length - 1].context
+        let cssObj: any = {}
+        let nowCtx: any = this.elementArr[this.elementArr.length - 1].context;
+        let top: any = this.elementArr[this.elementArr.length - 1].nowY;
+        let left: any = this.elementArr[this.elementArr.length - 1].nowX;
         this.setComponentAttribut(nowCtx, "position", "absolute");
-        this.setComponentAttribut(nowCtx, "top", this.elementArr[this.elementArr.length - 1].nowY + "px");
-        this.setComponentAttribut(nowCtx, "left", this.elementArr[this.elementArr.length - 1].nowX + "px");
+        cssObj = this.setComponentAttribut(nowCtx, "top", this.elementArr[this.elementArr.length - 1].nowY + "px");
+        cssObj = this.setComponentAttribut(nowCtx, "left", this.elementArr[this.elementArr.length - 1].nowX + "px");
+        this.elementArr[this.elementArr.length - 1].cssObj = cssObj;
+        let w = parseInt(cssObj.width.replace("px", ""))
+        let h = parseInt(cssObj.height.replace("px", ""))
+        console.log(cssObj);
+        for (let i = 0; i < this.canvasArr.length; i ++) {
+            this.canvasArr[i].selected = false;
+        }
+        this.canvasArr[this.elementArr.length - 1] = {
+            selected: true,
+            rX: left,
+            rY: top,
+            rW: w + 3,
+            rH: h + 3,
+            pointArr: [],
+            elementObj: this.elementArr[this.elementArr.length - 1]
+        }
+        this.canvasArr[this.elementArr.length - 1].pointArr.push({
+            pointX: left - 10,
+            pointY: top - 10
+        })
+        this.canvasArr[this.elementArr.length - 1].pointArr.push({
+            pointX: left + 13 + w,
+            pointY: top - 10
+        })
+        this.canvasArr[this.elementArr.length - 1].pointArr.push({
+            pointX: left + 13 + w,
+            pointY: top + 15 + h
+        })
+        this.canvasArr[this.elementArr.length - 1].pointArr.push({
+            pointX: left - 10,
+            pointY: top + 13 + h
+        })
+
+
+        setInterval(() => {
+            this.renderCanvas();
+        }, 15)
+
+    }
+
+
+
+    handleSelect(x: number, y: number) {
+        let isSelected = false
+        for (let i = this.canvasArr.length - 1; i >= 0; i --) {
+            let w = parseInt(this.canvasArr[i].elementObj.cssObj.width.replace("px", ""))
+            let h = parseInt(this.canvasArr[i].elementObj.cssObj.height.replace("px", ""))
+            // @ts-ignore
+            if ((x >= this.canvasArr[i].elementObj.nowX && x <= (this.canvasArr[i].elementObj.nowX + w)) && (y >= this.canvasArr[i].elementObj.nowY && y <= (this.canvasArr[i].elementObj.nowY + h))) {
+                if (!isSelected) {
+                    this.canvasArr[i].selected = true;
+                    isSelected = true
+                }
+                else {
+                    this.canvasArr[i].selected = false;
+                }
+            }
+            else {
+                this.canvasArr[i].selected = false;
+            }
+        }
+    }
+
+
+
+    renderCanvas() {
+        let canvas: any = document.getElementById("my-canvas");
+        let canvasr: any = document.getElementById("my-canvasr");
+        this.clearAll(0, 0, this.canvasObj.w, this.canvasObj.h, canvas);
+        this.clearAll(0, 0, this.canvasObj.w, this.canvasObj.h, canvasr);
+        for (let i = 0; i < this.canvasArr.length; i ++) {
+            if (this.canvasArr[i].selected) {
+                this.drawRect(this.canvasArr[i].rX, this.canvasArr[i].rY, this.canvasArr[i].rW, this.canvasArr[i].rH, canvasr, this.canvasArr[i].selected);
+                for (let j = 0; j < this.canvasArr[i].pointArr.length; j ++) {
+                    this.drawPoint(this.canvasArr[i].pointArr[j].pointX, this.canvasArr[i].pointArr[j].pointY, canvas)
+                }
+            }
+        }
     }
 
 
@@ -109,6 +208,39 @@ export class MakePageApplication implements MakePageAppInterface{
         this.canvasObj.w = dom?.clientWidth;
         this.canvasObj.h = dom?.clientHeight;
     }
+
+
+    clearAll(x: number, y: number, w: number | undefined, h: number | undefined, canvas: HTMLCanvasElement) {
+        let ctx: CanvasRenderingContext2D | any = canvas.getContext('2d');
+        ctx.clearRect(x, y, w, h)
+    }
+
+    drawRect(x: number, y: number, w: number, h: number, canvas: HTMLCanvasElement, selected: boolean) {
+        w += 20
+        x -= 10
+        h += 20
+        y -= 10
+        let ctx: CanvasRenderingContext2D | any = canvas.getContext('2d');
+        if (selected) {
+            ctx.fillStyle = "#ff0000"
+        }
+        else {
+            ctx.fillStyle = "#000000"
+        }
+        ctx.fillRect(x, y, w, h);
+        ctx.clearRect(x + 2, y + 2, w - 4, h - 4)
+    }
+
+
+    drawPoint(x: number, y: number, canvas: HTMLCanvasElement) {
+        let ctx: CanvasRenderingContext2D | any = canvas.getContext('2d');
+        ctx.fillStyle = "#ffaa00"
+        ctx.beginPath();
+        ctx.arc(x, y, 8, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.fill();
+    }
+
 
 
 
