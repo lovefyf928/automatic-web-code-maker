@@ -33,7 +33,7 @@ export default class MakePage extends Vue {
 
 
   mounted() {
-    this.listW = window.innerWidth * 0.2 + 40;
+    this.listW = document.getElementsByClassName("icon-list")[0].clientWidth;
     this.makePageApplication.setSelectedType();
     this.componentsList = this.makePageApplication.getAllComponentList();
     this.makePageApplication.getMainContainerWH()
@@ -67,7 +67,7 @@ export default class MakePage extends Vue {
 
   handleMM(e: any) {
     if (this.isDrag) {
-      console.log(e);
+      this.makePageApplication.handleSelect(e.clientX - this.listW, e.clientY)
     }
   }
 

@@ -126,6 +126,16 @@ export class MakePageApplication implements MakePageAppInterface{
         let w = parseInt(cssObj.width.replace("px", ""))
         let h = parseInt(cssObj.height.replace("px", ""))
         console.log(cssObj);
+        this.addCanvasList(left, top, w, h)
+
+        setInterval(() => {
+            this.renderCanvas();
+        }, 15)
+
+    }
+
+
+    addCanvasList(left: number, top: number, w: number, h: number) {
         for (let i = 0; i < this.canvasArr.length; i ++) {
             this.canvasArr[i].selected = false;
         }
@@ -154,12 +164,16 @@ export class MakePageApplication implements MakePageAppInterface{
             pointX: left - 10,
             pointY: top + 13 + h
         })
+    }
 
 
-        setInterval(() => {
-            this.renderCanvas();
-        }, 15)
+    handleChangeItem() {
 
+    }
+
+    handleChangeItemSize(nowMouseX: number, nowMouseY: number, canvasObj: canvasObj) {
+        console.log("hit point");
+        console.log(nowMouseX, nowMouseY)
     }
 
 
@@ -169,8 +183,19 @@ export class MakePageApplication implements MakePageAppInterface{
         for (let i = this.canvasArr.length - 1; i >= 0; i --) {
             let w = parseInt(this.canvasArr[i].elementObj.cssObj.width.replace("px", ""))
             let h = parseInt(this.canvasArr[i].elementObj.cssObj.height.replace("px", ""))
+            if (this.canvasArr[i].selected) {
+                for (let j = 0; j < this.canvasArr[i].pointArr.length; j++) {
+                    let zeroPointX = this.canvasArr[i].pointArr[j].pointX - 4;
+                    let zeroPointY = this.canvasArr[i].pointArr[j].pointY - 4;
+                    if ((x >= zeroPointX && x <= (zeroPointX + 8)) && (y >= zeroPointY && y <= (zeroPointY + 8))) {
+                        this.handleChangeItemSize(x, y, this.canvasArr[i]);
+                        return;
+                    }
+                }
+            }
             // @ts-ignore
             if ((x >= this.canvasArr[i].elementObj.nowX && x <= (this.canvasArr[i].elementObj.nowX + w)) && (y >= this.canvasArr[i].elementObj.nowY && y <= (this.canvasArr[i].elementObj.nowY + h))) {
+
                 if (!isSelected) {
                     this.canvasArr[i].selected = true;
                     isSelected = true
