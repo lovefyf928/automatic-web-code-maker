@@ -234,7 +234,7 @@ export class MakePageApplication implements MakePageAppInterface{
                         let rZeroPointX = this.canvasArr[i].rX;
                         let rZeroPointY = this.canvasArr[i].rY;
 
-                        if ((x >= rZeroPointX && x <= (rZeroPointX + this.canvasArr[i].rW + 20)) && (y >= rZeroPointY && y <= (rZeroPointY + this.canvasArr[i].rH + 20))) {
+                        if ((x >= rZeroPointX && x <= (rZeroPointX + this.canvasArr[i].rW + 10)) && (y >= rZeroPointY && y <= (rZeroPointY + this.canvasArr[i].rH + 10))) {
                             if (mode === "click") {
                                 this.clickX = x;
                                 this.clickY = y;
