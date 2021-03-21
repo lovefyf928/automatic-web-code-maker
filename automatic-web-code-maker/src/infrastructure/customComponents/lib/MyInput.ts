@@ -7,14 +7,16 @@ export function MyInput() {
         name: "MyInput",
         data() {
             return {
-                cc: new CustomComponents(),
+                cc: new CustomComponents(this),
                 styleObj: {}
             }
         },
         mounted() {
-            this.styleObj = this.cc.cssObj
+            setTimeout(() => {
+                this.styleObj = this.cc.cssObj;
+            })
         },
-        render(createElement, hack): VNode {
+        render(createElement): VNode {
             return createElement(
                 "label",
                 [

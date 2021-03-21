@@ -20,9 +20,12 @@ export interface CustomComponentsIconInterface {
 
 
 export class CustomComponents extends Vue implements CustomComponentsInterface{
+
+
     public cssObj: any = {width: "300px", height: "150px"};
 
     public styleString: string = "width: 300px; height: 150px"
+
 
 
     public setOptions(cssAttribute: string, val: any): any {

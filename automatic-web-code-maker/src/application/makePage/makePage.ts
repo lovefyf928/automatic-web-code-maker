@@ -53,6 +53,10 @@ interface canvasWH {
     h: number | undefined
 }
 
+
+let isTop: number = 0
+
+
 export class MakePageApplication implements MakePageAppInterface{
     constructor(context: Vue) {
         this.context = context;
@@ -67,6 +71,9 @@ export class MakePageApplication implements MakePageAppInterface{
     elementArr: elementObj[] = [];
 
     canvasArr: canvasObj[] = [];
+
+    clickX: number = 0;
+    clickY: number = 0;
 
 
     setSelectedType() {
@@ -167,45 +174,109 @@ export class MakePageApplication implements MakePageAppInterface{
     }
 
 
-    handleChangeItem() {
 
-    }
 
-    handleChangeItemSize(nowMouseX: number, nowMouseY: number, canvasObj: canvasObj) {
+    handleChangeItemSize(nowMouseX: number, nowMouseY: number, elementArrKey: number) {
         console.log("hit point");
         console.log(nowMouseX, nowMouseY)
     }
 
+    handleMoveItem(nowMouseX: number, nowMouseY: number, elementArrKey: number) {
+        if (this.clickX === -1 || this.clickY === -1) {
+            return
+        }
+        let moveX = nowMouseX - this.clickX;
+        let moveY = nowMouseY - this.clickY;
+
+        this.canvasArr[elementArrKey].rX += moveX;
+        this.canvasArr[elementArrKey].rY += moveY;
+
+        // @ts-ignore
+        this.elementArr[elementArrKey].nowX += moveX;
+        // @ts-ignore
+        this.elementArr[elementArrKey].nowY += moveY
+
+        let cssObj: any
+        cssObj = this.setComponentAttribut(this.elementArr[elementArrKey].context, "top", this.elementArr[elementArrKey].nowY + "px");
+        cssObj = this.setComponentAttribut(this.elementArr[elementArrKey].context, "left", this.elementArr[elementArrKey].nowX + "px");
+        this.elementArr[elementArrKey].cssObj = cssObj;
+
+        for (let i = 0; i < this.canvasArr[elementArrKey].pointArr.length; i ++) {
+            this.canvasArr[elementArrKey].pointArr[i].pointX += moveX;
+            this.canvasArr[elementArrKey].pointArr[i].pointY += moveY;
+        }
+
+        this.clickX = nowMouseX;
+        this.clickY = nowMouseY;
+
+    }
 
 
-    handleSelect(x: number, y: number) {
-        let isSelected = false
+
+    handleSelect(x: number, y: number, mode: string) {
+        let onHitCount = 0;
+        if (mode === "click") {
+            isTop = 0;
+        }
         for (let i = this.canvasArr.length - 1; i >= 0; i --) {
             let w = parseInt(this.canvasArr[i].elementObj.cssObj.width.replace("px", ""))
             let h = parseInt(this.canvasArr[i].elementObj.cssObj.height.replace("px", ""))
-            if (this.canvasArr[i].selected) {
-                for (let j = 0; j < this.canvasArr[i].pointArr.length; j++) {
-                    let zeroPointX = this.canvasArr[i].pointArr[j].pointX - 4;
-                    let zeroPointY = this.canvasArr[i].pointArr[j].pointY - 4;
-                    if ((x >= zeroPointX && x <= (zeroPointX + 8)) && (y >= zeroPointY && y <= (zeroPointY + 8))) {
-                        this.handleChangeItemSize(x, y, this.canvasArr[i]);
-                        return;
+            if (mode === "move" || mode === "click") {
+                if (this.canvasArr[i].selected) {
+                    for (let j = 0; j < this.canvasArr[i].pointArr.length; j++) {
+                        let zeroPointX = this.canvasArr[i].pointArr[j].pointX - 4;
+                        let zeroPointY = this.canvasArr[i].pointArr[j].pointY - 4;
+                        if ((x >= zeroPointX && x <= (zeroPointX + 8)) && (y >= zeroPointY && y <= (zeroPointY + 8))) {
+                            this.handleChangeItemSize(x, y, i);
+                            return;
+                        }
+
+                        let rZeroPointX = this.canvasArr[i].rX;
+                        let rZeroPointY = this.canvasArr[i].rY;
+
+                        if ((x >= rZeroPointX && x <= (rZeroPointX + this.canvasArr[i].rW + 20)) && (y >= rZeroPointY && y <= (rZeroPointY + this.canvasArr[i].rH + 20))) {
+                            if (mode === "click") {
+                                this.clickX = x;
+                                this.clickY = y;
+                            }
+                            else if (mode === "move") {
+                                this.handleMoveItem(x, y, i)
+                            }
+                            // return;
+                        }
                     }
                 }
             }
             // @ts-ignore
             if ((x >= this.canvasArr[i].elementObj.nowX && x <= (this.canvasArr[i].elementObj.nowX + w)) && (y >= this.canvasArr[i].elementObj.nowY && y <= (this.canvasArr[i].elementObj.nowY + h))) {
+                if (mode !== "move") {
+                    if (isTop < i) {
+                        isTop = i;
 
-                if (!isSelected) {
-                    this.canvasArr[i].selected = true;
-                    isSelected = true
+                    }
                 }
-                else {
-                    this.canvasArr[i].selected = false;
-                }
+                // console.log(isTop);
+                // console.log(1);
             }
             else {
-                this.canvasArr[i].selected = false;
+                if (mode === "move" || mode === "click") {
+                    onHitCount ++
+                }
+                // isSelected = false
+                // this.canvasArr[i].selected = false;
+            }
+            if (i === 0) {
+
+
+                for (let k = 0; k < this.canvasArr.length; k ++) {
+                    this.canvasArr[k].selected = false;
+                }
+                if (onHitCount !== this.canvasArr.length) {
+                    this.canvasArr[isTop].selected = true;
+                }
+                this.clickX = x;
+                this.clickY = y;
+
             }
         }
     }

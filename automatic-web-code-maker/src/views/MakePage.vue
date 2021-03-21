@@ -55,24 +55,26 @@ export default class MakePage extends Vue {
   handleMD(e: any) {
     console.log(e);
     this.isDrag = true
-    this.makePageApplication.handleSelect(e.clientX - this.listW, e.clientY)
+    this.makePageApplication.handleSelect(e.clientX - this.listW, e.clientY, "click")
 
   }
 
   handleMU(e: any) {
     console.log(e);
     this.isDrag = false;
+    // this.makePageApplication.handleSelect(e.clientX - this.listW, e.clientY, "over")
   }
 
 
   handleMM(e: any) {
     if (this.isDrag) {
-      this.makePageApplication.handleSelect(e.clientX - this.listW, e.clientY)
+      this.makePageApplication.handleSelect(e.clientX - this.listW, e.clientY, "move")
     }
   }
 
   handleML() {
     this.isDrag = false;
+    // this.makePageApplication.handleSelect(e.clientX - this.listW, e.clientY, "over")
   }
 
 }
