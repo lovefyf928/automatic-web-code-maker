@@ -8,7 +8,8 @@ export function MyInput() {
         data() {
             return {
                 cc: new CustomComponents(this),
-                styleObj: {}
+                styleObj: {},
+                showElement: true
             }
         },
         mounted() {
@@ -17,17 +18,23 @@ export function MyInput() {
             })
         },
         render(createElement): VNode {
-            return createElement(
-                "label",
-                [
-                    createElement(
-                        "input",
-                        {
-                            style: this.styleObj
-                        }
-                    )
-                ]
-            )
+            if (this.showElement) {
+                console.log(1);
+                return createElement(
+                    "label",
+                    [
+                        createElement(
+                            "input",
+                            {
+                                style: this.styleObj
+                            }
+                        )
+                    ]
+                )
+            }
+            else {
+                return createElement()
+            }
         }
     })
 }

@@ -6,10 +6,21 @@
         <span>{{tmp.text}}</span>
       </div>
     </div>
-    <div id="page-area" >
+    <div @keydown="handleKeyDown" id="page-area" >
       <canvas id="my-canvas" style="width: 100%; height: 100%; position: absolute; left: 0; top: 0; z-index: 998" :width="makePageApplication.canvasObj.w" :height="makePageApplication.canvasObj.h"></canvas>
-      <canvas @mouseleave="handleML" @mousemove="handleMM" @mouseup="handleMU" @mousedown="handleMD"  id="my-canvasr" style="width: 100%; height: 100%; position: absolute; left: 0; top: 0; z-index: 999" :width="makePageApplication.canvasObj.w" :height="makePageApplication.canvasObj.h"></canvas>
+      <canvas @click="closeMyM" @contextmenu.prevent @click.right="handleRightClick" @mouseleave="handleML" @mousemove="handleMM" @mouseup="handleMU" @mousedown="handleMD"  id="my-canvasr" style="width: 100%; height: 100%; position: absolute; left: 0; top: 0; z-index: 999" :width="makePageApplication.canvasObj.w" :height="makePageApplication.canvasObj.h"></canvas>
       <div id="mount-box"></div>
+      <div v-if="displayM" :style="mCss">
+        <div style="width: 100%; height: 30px; line-height: 30px; border-bottom: 1px solid #eeeeee; text-align: center">
+          <span>将当前元素置顶</span>
+        </div>
+        <div style="width: 100%; height: 30px; line-height: 30px; text-align: center; border-bottom: 1px solid #eeeeee;">
+          <span>将当前元素置底</span>
+        </div>
+        <div @click="closeMyM" style="width: 100%; height: 30px; line-height: 30px; text-align: center">
+          <span>取消</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -30,6 +41,10 @@ export default class MakePage extends Vue {
 
   private isDrag = false
 
+  private displayM = false
+
+  private mCss = "width: 100px; height: 90px; font-size: 13px; position: absolute; top: 0; left: 0; z-index: 1000; border: 1px solid #eeeeee; cursor: pointer;"
+
 
 
   mounted() {
@@ -40,6 +55,29 @@ export default class MakePage extends Vue {
     window.onresize = () => {
       this.makePageApplication.getMainContainerWH()
     }
+    window.addEventListener("keydown", this.handleKeyDown);
+  }
+
+
+  handleKeyDown(e: any) {
+    console.log(e);
+    if (e.keyCode === 8) {
+      this.makePageApplication.delElement();
+    }
+  }
+
+  handleRightClick(e: any) {
+    console.log(e);
+    this.showMyM(e.clientX - this.listW, e.clientY)
+  }
+
+  showMyM(x: number, y: number) {
+    this.mCss = `width: 100px; height: 90px; font-size: 13px; position: absolute; top: ${y}px; left: ${x}px; z-index: 1000; border: 1px solid #eeeeee; cursor: pointer;`
+    this.displayM = true;
+  }
+
+  closeMyM() {
+    this.displayM = false;
   }
 
 

@@ -5,7 +5,7 @@ import {obj} from "@/infrastructure/customComponents/lib";
 
 export interface CustomComponentsInterface {
     cssObj: any
-    styleString: string
+    styleString: string,
 }
 
 
@@ -20,6 +20,7 @@ export interface CustomComponentsIconInterface {
 
 
 export class CustomComponents extends Vue implements CustomComponentsInterface{
+
 
 
     public cssObj: any = {width: "300px", height: "150px"};
