@@ -239,6 +239,8 @@ export class MakePageApplication implements MakePageAppInterface {
         nowElement.nowX = left;
         nowElement.nowY = top;
 
+
+
     }
 
 
