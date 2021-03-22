@@ -9,10 +9,13 @@ import {
 
 interface MakePageAppInterface {
     setSelectedType(typeObj: TranslatorTypeList): void
+
     translatorService: TranslatorService
     cache: Cache
     context: Vue
+
     getSelectedType(): void
+
     setComponentAttribut(refs: string, attribute: string, val: any): any
 
     customComponentsConfig: CustomComponentsConfig
@@ -57,10 +60,11 @@ interface canvasWH {
 let isTop: number = 0
 
 
-export class MakePageApplication implements MakePageAppInterface{
+export class MakePageApplication implements MakePageAppInterface {
     constructor(context: Vue) {
         this.context = context;
     }
+
     translatorService: TranslatorService = new TranslatorService();
     customComponentsConfig: CustomComponentsConfig = new CustomComponentsConfig();
     cache: Cache = new Cache();
@@ -80,11 +84,9 @@ export class MakePageApplication implements MakePageAppInterface{
         if (this.context.$route.params.type !== undefined) {
             this.cache.setValue("t_t", this.context.$route.params.type);
             this.translatorService.selectTranslatorType(<TranslatorType><unknown>this.context.$route.params.type)
-        }
-        else if (this.cache.getValue("t_t") !== undefined) {
+        } else if (this.cache.getValue("t_t") !== undefined) {
             this.translatorService.selectTranslatorType(this.cache.getValue("t_t"))
-        }
-        else {
+        } else {
             this.context.$router.push({name: "Index"})
         }
     }
@@ -94,7 +96,7 @@ export class MakePageApplication implements MakePageAppInterface{
     }
 
     setComponentAttribut(context: any, attribute: string, val: any): any {
-        return  context.cc.setOptions(attribute, val)
+        return context.cc.setOptions(attribute, val)
     }
 
 
@@ -143,7 +145,7 @@ export class MakePageApplication implements MakePageAppInterface{
 
 
     addCanvasList(left: number, top: number, w: number, h: number) {
-        for (let i = 0; i < this.canvasArr.length; i ++) {
+        for (let i = 0; i < this.canvasArr.length; i++) {
             this.canvasArr[i].selected = false;
         }
         this.canvasArr[this.elementArr.length - 1] = {
@@ -174,12 +176,71 @@ export class MakePageApplication implements MakePageAppInterface{
     }
 
 
-
-
-    handleChangeItemSize(nowMouseX: number, nowMouseY: number, elementArrKey: number) {
+    handleChangeItemSize(nowMouseX: number, nowMouseY: number, elementArrKey: number, pointKey: number) {
         console.log("hit point");
-        console.log(nowMouseX, nowMouseY)
+        console.log(nowMouseX, nowMouseY, elementArrKey, pointKey);
+        let offsetX = 0;
+        let offsetY = 0;
+        let w;
+        let h;
+        let top;
+        let left;
+        if (pointKey === 0) {
+            offsetX = this.canvasArr[elementArrKey].pointArr[pointKey].pointX - nowMouseX;
+            offsetY = this.canvasArr[elementArrKey].pointArr[pointKey].pointY - nowMouseY
+            this.canvasArr[elementArrKey].rW += offsetX;
+            this.canvasArr[elementArrKey].rH += offsetY;
+            this.canvasArr[elementArrKey].pointArr[1].pointY -= offsetY;
+            this.canvasArr[elementArrKey].pointArr[3].pointX -= offsetX;
+            this.canvasArr[elementArrKey].rX = nowMouseX + 10;
+            this.canvasArr[elementArrKey].rY = nowMouseY + 10;
+            this.canvasArr[elementArrKey].pointArr[pointKey].pointX = nowMouseX;
+            this.canvasArr[elementArrKey].pointArr[pointKey].pointY = nowMouseY;
+        } else if (pointKey === 1) {
+            offsetX = nowMouseX - this.canvasArr[elementArrKey].pointArr[pointKey].pointX;
+            offsetY = this.canvasArr[elementArrKey].pointArr[pointKey].pointY - nowMouseY;
+            this.canvasArr[elementArrKey].rW += offsetX;
+            this.canvasArr[elementArrKey].rH += offsetY;
+            this.canvasArr[elementArrKey].pointArr[pointKey].pointX += offsetX
+            this.canvasArr[elementArrKey].pointArr[pointKey].pointY -= offsetY
+            this.canvasArr[elementArrKey].rY -= offsetY
+            this.canvasArr[elementArrKey].pointArr[0].pointY -= offsetY;
+            this.canvasArr[elementArrKey].pointArr[2].pointX += offsetX;
+        } else if (pointKey === 2) {
+            offsetX = nowMouseX - this.canvasArr[elementArrKey].pointArr[pointKey].pointX;
+            offsetY = nowMouseY - this.canvasArr[elementArrKey].pointArr[pointKey].pointY;
+            this.canvasArr[elementArrKey].rW += offsetX;
+            this.canvasArr[elementArrKey].rH += offsetY;
+            this.canvasArr[elementArrKey].pointArr[pointKey].pointX += offsetX
+            this.canvasArr[elementArrKey].pointArr[pointKey].pointY += offsetY
+            this.canvasArr[elementArrKey].pointArr[3].pointY += offsetY;
+            this.canvasArr[elementArrKey].pointArr[1].pointX += offsetX;
+        } else if (pointKey === 3) {
+            offsetX = this.canvasArr[elementArrKey].pointArr[pointKey].pointX - nowMouseX;
+            offsetY = nowMouseY - this.canvasArr[elementArrKey].pointArr[pointKey].pointY;
+            this.canvasArr[elementArrKey].rW += offsetX;
+            this.canvasArr[elementArrKey].rH += offsetY;
+            this.canvasArr[elementArrKey].pointArr[pointKey].pointX -= offsetX
+            this.canvasArr[elementArrKey].pointArr[pointKey].pointY += offsetY
+            this.canvasArr[elementArrKey].rX -= offsetX
+            this.canvasArr[elementArrKey].pointArr[0].pointX -= offsetX;
+            this.canvasArr[elementArrKey].pointArr[2].pointY += offsetY;
+        }
+        w = this.canvasArr[elementArrKey].rW - 3;
+        h = this.canvasArr[elementArrKey].rH - 3;
+        top = this.canvasArr[elementArrKey].pointArr[0].pointY + 10;
+        left = this.canvasArr[elementArrKey].pointArr[0].pointX + 10;
+        let nowElement = this.elementArr[elementArrKey];
+        let cssObj = nowElement.cssObj;
+        cssObj.left = left + "px";
+        cssObj.top = top + "px";
+        cssObj.width = w + "px";
+        cssObj.height = h + "px";
+        nowElement.nowX = left;
+        nowElement.nowY = top;
+
     }
+
 
     handleMoveItem(nowMouseX: number, nowMouseY: number, elementArrKey: number) {
         if (this.clickX === -1 || this.clickY === -1) {
@@ -201,7 +262,7 @@ export class MakePageApplication implements MakePageAppInterface{
         cssObj = this.setComponentAttribut(this.elementArr[elementArrKey].context, "left", this.elementArr[elementArrKey].nowX + "px");
         this.elementArr[elementArrKey].cssObj = cssObj;
 
-        for (let i = 0; i < this.canvasArr[elementArrKey].pointArr.length; i ++) {
+        for (let i = 0; i < this.canvasArr[elementArrKey].pointArr.length; i++) {
             this.canvasArr[elementArrKey].pointArr[i].pointX += moveX;
             this.canvasArr[elementArrKey].pointArr[i].pointY += moveY;
         }
@@ -212,13 +273,12 @@ export class MakePageApplication implements MakePageAppInterface{
     }
 
 
-
     handleSelect(x: number, y: number, mode: string) {
         let onHitCount = 0;
         if (mode === "click") {
             isTop = 0;
         }
-        for (let i = this.canvasArr.length - 1; i >= 0; i --) {
+        for (let i = this.canvasArr.length - 1; i >= 0; i--) {
             let w = parseInt(this.canvasArr[i].elementObj.cssObj.width.replace("px", ""))
             let h = parseInt(this.canvasArr[i].elementObj.cssObj.height.replace("px", ""))
             if (mode === "move" || mode === "click") {
@@ -227,19 +287,18 @@ export class MakePageApplication implements MakePageAppInterface{
                         let zeroPointX = this.canvasArr[i].pointArr[j].pointX - 4;
                         let zeroPointY = this.canvasArr[i].pointArr[j].pointY - 4;
                         if ((x >= zeroPointX && x <= (zeroPointX + 8)) && (y >= zeroPointY && y <= (zeroPointY + 8))) {
-                            this.handleChangeItemSize(x, y, i);
+                            this.handleChangeItemSize(x, y, i, j);
                             return;
                         }
 
                         let rZeroPointX = this.canvasArr[i].rX;
                         let rZeroPointY = this.canvasArr[i].rY;
 
-                        if ((x >= rZeroPointX && x <= (rZeroPointX + this.canvasArr[i].rW + 10)) && (y >= rZeroPointY && y <= (rZeroPointY + this.canvasArr[i].rH + 10))) {
+                        if ((x >= rZeroPointX && x <= (rZeroPointX + this.canvasArr[i].rW)) && (y >= rZeroPointY && y <= (rZeroPointY + this.canvasArr[i].rH))) {
                             if (mode === "click") {
                                 this.clickX = x;
                                 this.clickY = y;
-                            }
-                            else if (mode === "move") {
+                            } else if (mode === "move") {
                                 this.handleMoveItem(x, y, i)
                             }
                             // return;
@@ -257,10 +316,9 @@ export class MakePageApplication implements MakePageAppInterface{
                 }
                 // console.log(isTop);
                 // console.log(1);
-            }
-            else {
+            } else {
                 if (mode === "move" || mode === "click") {
-                    onHitCount ++
+                    onHitCount++
                 }
                 // isSelected = false
                 // this.canvasArr[i].selected = false;
@@ -268,7 +326,7 @@ export class MakePageApplication implements MakePageAppInterface{
             if (i === 0) {
 
 
-                for (let k = 0; k < this.canvasArr.length; k ++) {
+                for (let k = 0; k < this.canvasArr.length; k++) {
                     this.canvasArr[k].selected = false;
                 }
                 if (onHitCount !== this.canvasArr.length) {
@@ -282,16 +340,15 @@ export class MakePageApplication implements MakePageAppInterface{
     }
 
 
-
     renderCanvas() {
         let canvas: any = document.getElementById("my-canvas");
         let canvasr: any = document.getElementById("my-canvasr");
         this.clearAll(0, 0, this.canvasObj.w, this.canvasObj.h, canvas);
         this.clearAll(0, 0, this.canvasObj.w, this.canvasObj.h, canvasr);
-        for (let i = 0; i < this.canvasArr.length; i ++) {
+        for (let i = 0; i < this.canvasArr.length; i++) {
             if (this.canvasArr[i].selected) {
                 this.drawRect(this.canvasArr[i].rX, this.canvasArr[i].rY, this.canvasArr[i].rW, this.canvasArr[i].rH, canvasr, this.canvasArr[i].selected);
-                for (let j = 0; j < this.canvasArr[i].pointArr.length; j ++) {
+                for (let j = 0; j < this.canvasArr[i].pointArr.length; j++) {
                     this.drawPoint(this.canvasArr[i].pointArr[j].pointX, this.canvasArr[i].pointArr[j].pointY, canvas)
                 }
             }
@@ -319,8 +376,7 @@ export class MakePageApplication implements MakePageAppInterface{
         let ctx: CanvasRenderingContext2D | any = canvas.getContext('2d');
         if (selected) {
             ctx.fillStyle = "#ff0000"
-        }
-        else {
+        } else {
             ctx.fillStyle = "#000000"
         }
         ctx.fillRect(x, y, w, h);
@@ -336,8 +392,6 @@ export class MakePageApplication implements MakePageAppInterface{
         ctx.closePath();
         ctx.fill();
     }
-
-
 
 
 }
