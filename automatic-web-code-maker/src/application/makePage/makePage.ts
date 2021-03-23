@@ -193,6 +193,7 @@ export class MakePageApplication implements MakePageAppInterface {
         if (pointKey === 0) {
             offsetX = this.canvasArr[elementArrKey].pointArr[pointKey].pointX - nowMouseX;
             offsetY = this.canvasArr[elementArrKey].pointArr[pointKey].pointY - nowMouseY
+            console.log(offsetY);
             if (this.canvasArr[elementArrKey].rW > minWidth) {
                 this.canvasArr[elementArrKey].rW += offsetX;
                 this.canvasArr[elementArrKey].pointArr[3].pointX -= offsetX;
@@ -200,7 +201,15 @@ export class MakePageApplication implements MakePageAppInterface {
                 this.canvasArr[elementArrKey].pointArr[pointKey].pointX = nowMouseX;
             }
             else {
-                nowMinW = true;
+                if (offsetX >= 0) {
+                    this.canvasArr[elementArrKey].rW += offsetX;
+                    this.canvasArr[elementArrKey].pointArr[3].pointX -= offsetX;
+                    this.canvasArr[elementArrKey].rX = nowMouseX + 10;
+                    this.canvasArr[elementArrKey].pointArr[pointKey].pointX = nowMouseX;
+                }
+                else {
+                    nowMinW = true;
+                }
             }
             if (this.canvasArr[elementArrKey].rH > minHeight) {
                 this.canvasArr[elementArrKey].rH += offsetY;
@@ -209,7 +218,15 @@ export class MakePageApplication implements MakePageAppInterface {
                 this.canvasArr[elementArrKey].pointArr[pointKey].pointY = nowMouseY;
             }
             else {
-                nowMinH = true;
+                if (offsetY >= 0) {
+                    this.canvasArr[elementArrKey].rH += offsetY;
+                    this.canvasArr[elementArrKey].pointArr[1].pointY -= offsetY;
+                    this.canvasArr[elementArrKey].rY = nowMouseY + 10;
+                    this.canvasArr[elementArrKey].pointArr[pointKey].pointY = nowMouseY;
+                }
+                else {
+                    nowMinH = true;
+                }
             }
         } else if (pointKey === 1) {
             offsetX = nowMouseX - this.canvasArr[elementArrKey].pointArr[pointKey].pointX;
@@ -220,7 +237,14 @@ export class MakePageApplication implements MakePageAppInterface {
                 this.canvasArr[elementArrKey].pointArr[pointKey].pointX += offsetX
             }
             else {
-                nowMinW = true;
+                if (offsetX >= 0) {
+                    this.canvasArr[elementArrKey].rW += offsetX;
+                    this.canvasArr[elementArrKey].pointArr[2].pointX += offsetX;
+                    this.canvasArr[elementArrKey].pointArr[pointKey].pointX += offsetX
+                }
+                else {
+                    nowMinW = true;
+                }
             }
             if (this.canvasArr[elementArrKey].rH > minHeight) {
                 this.canvasArr[elementArrKey].rH += offsetY;
@@ -229,7 +253,15 @@ export class MakePageApplication implements MakePageAppInterface {
                 this.canvasArr[elementArrKey].rY -= offsetY
             }
             else {
-                nowMinH = true;
+                if (offsetY >= 0) {
+                    this.canvasArr[elementArrKey].rH += offsetY;
+                    this.canvasArr[elementArrKey].pointArr[0].pointY -= offsetY;
+                    this.canvasArr[elementArrKey].pointArr[pointKey].pointY -= offsetY
+                    this.canvasArr[elementArrKey].rY -= offsetY
+                }
+                else {
+                    nowMinH = true;
+                }
             }
 
 
@@ -242,7 +274,14 @@ export class MakePageApplication implements MakePageAppInterface {
                 this.canvasArr[elementArrKey].pointArr[1].pointX += offsetX;
             }
             else {
-                nowMinW = true;
+                if (offsetX >= 0) {
+                    this.canvasArr[elementArrKey].rW += offsetX;
+                    this.canvasArr[elementArrKey].pointArr[pointKey].pointX += offsetX
+                    this.canvasArr[elementArrKey].pointArr[1].pointX += offsetX;
+                }
+                else {
+                    nowMinW = true;
+                }
             }
             if (this.canvasArr[elementArrKey].rH > minHeight) {
                 this.canvasArr[elementArrKey].rH += offsetY;
@@ -250,7 +289,14 @@ export class MakePageApplication implements MakePageAppInterface {
                 this.canvasArr[elementArrKey].pointArr[3].pointY += offsetY;
             }
             else {
-                nowMinH = true;
+                if (offsetY >= 0) {
+                    this.canvasArr[elementArrKey].rH += offsetY;
+                    this.canvasArr[elementArrKey].pointArr[pointKey].pointY += offsetY
+                    this.canvasArr[elementArrKey].pointArr[3].pointY += offsetY;
+                }
+                else {
+                    nowMinH = true;
+                }
             }
         } else if (pointKey === 3) {
             offsetX = this.canvasArr[elementArrKey].pointArr[pointKey].pointX - nowMouseX;
@@ -262,7 +308,15 @@ export class MakePageApplication implements MakePageAppInterface {
                 this.canvasArr[elementArrKey].pointArr[0].pointX -= offsetX;
             }
             else {
-                nowMinW = true;
+                if (offsetX >= 0) {
+                    this.canvasArr[elementArrKey].rW += offsetX;
+                    this.canvasArr[elementArrKey].pointArr[pointKey].pointX -= offsetX
+                    this.canvasArr[elementArrKey].rX -= offsetX
+                    this.canvasArr[elementArrKey].pointArr[0].pointX -= offsetX;
+                }
+                else {
+                    nowMinW = true;
+                }
             }
             if (this.canvasArr[elementArrKey].rH > minHeight) {
                 this.canvasArr[elementArrKey].rH += offsetY;
@@ -270,7 +324,14 @@ export class MakePageApplication implements MakePageAppInterface {
                 this.canvasArr[elementArrKey].pointArr[2].pointY += offsetY;
             }
             else {
-                nowMinH = true;
+                if (offsetY >= 0) {
+                    this.canvasArr[elementArrKey].rH += offsetY;
+                    this.canvasArr[elementArrKey].pointArr[pointKey].pointY += offsetY
+                    this.canvasArr[elementArrKey].pointArr[2].pointY += offsetY;
+                }
+                else {
+                    nowMinH = true;
+                }
             }
         }
 
