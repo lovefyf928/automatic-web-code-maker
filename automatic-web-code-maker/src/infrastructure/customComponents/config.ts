@@ -4,8 +4,13 @@ export const configArr: CustomComponentsIconInterface[] = [
     {
         id: 1,
         iconPath: "customComponentIcon/input.jpg",
-        componentPath: "@/infrastructure/customComponents/lib/MyInput.vue",
         text: "MyInput",
         tagName: "my-input"
+    },
+    {
+        id: 2,
+        iconPath: "customComponentIcon/input.jpg",
+        text: "MyImg",
+        tagName: "my-img"
     }
 ]

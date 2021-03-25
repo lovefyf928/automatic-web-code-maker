@@ -1,3 +1,8 @@
 export interface TranslatorConfig {
-    context: Vue
+    elementList: any
+    fileName: string
 }
+
+
+
+

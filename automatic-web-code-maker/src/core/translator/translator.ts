@@ -17,6 +17,8 @@ export interface TranslatorCore {
 
     typeList: TranslatorTypeList[]
 
+    htmlTemp: string
+
     getTranslatorType(): TranslatorTypeList[]
 
     selectTranslatorType(type: TranslatorType): void

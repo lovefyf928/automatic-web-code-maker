@@ -11,10 +11,10 @@
       <canvas @click="closeMyM" @contextmenu.prevent @click.right="handleRightClick" @mouseleave="handleML" @mousemove="handleMM" @mouseup="handleMU" @mousedown="handleMD"  id="my-canvasr" style="width: 100%; height: 100%; position: absolute; left: 0; top: 0; z-index: 999" :width="makePageApplication.canvasObj.w" :height="makePageApplication.canvasObj.h"></canvas>
       <div id="mount-box"></div>
       <div v-if="displayM" :style="mCss">
-        <div style="width: 100%; height: 30px; line-height: 30px; border-bottom: 1px solid #eeeeee; text-align: center">
+        <div @click="setTop" style="width: 100%; height: 30px; line-height: 30px; border-bottom: 1px solid #999999; text-align: center">
           <span>将当前元素置顶</span>
         </div>
-        <div style="width: 100%; height: 30px; line-height: 30px; text-align: center; border-bottom: 1px solid #eeeeee;">
+        <div @click="setBottom" style="width: 100%; height: 30px; line-height: 30px; text-align: center; border-bottom: 1px solid #999999;">
           <span>将当前元素置底</span>
         </div>
         <div @click="closeMyM" style="width: 100%; height: 30px; line-height: 30px; text-align: center">
@@ -22,6 +22,7 @@
         </div>
       </div>
     </div>
+    <button style="width: 100px; height: 60px; background: skyblue; position: absolute; bottom: 10px; right: 20px; z-index: 9999" @click="doMakeCode">生成</button>
   </div>
 </template>
 
@@ -43,7 +44,9 @@ export default class MakePage extends Vue {
 
   private displayM = false
 
-  private mCss = "width: 100px; height: 90px; font-size: 13px; position: absolute; top: 0; left: 0; z-index: 1000; border: 1px solid #eeeeee; cursor: pointer;"
+  private mCss = "width: 100px; height: 90px; font-size: 13px; position: absolute; top: 0; left: 0; z-index: 1000; border: 1px solid #999999; cursor: pointer;background: #eeeeee;"
+
+  private nowRightClick = {x: -1, y: -1};
 
 
 
@@ -58,6 +61,14 @@ export default class MakePage extends Vue {
     window.addEventListener("keydown", this.handleKeyDown);
   }
 
+  setTop() {
+    this.makePageApplication.handleSelect(this.nowRightClick.x, this.nowRightClick.y, "click", true);
+  }
+
+  setBottom() {
+    this.makePageApplication.handleSelect(this.nowRightClick.x, this.nowRightClick.y, "click", false, true);
+  }
+
 
   handleKeyDown(e: any) {
     console.log(e);
@@ -68,11 +79,12 @@ export default class MakePage extends Vue {
 
   handleRightClick(e: any) {
     console.log(e);
+    this.nowRightClick = {x: e.clientX - this.listW, y: e.clientY};
     this.showMyM(e.clientX - this.listW, e.clientY)
   }
 
   showMyM(x: number, y: number) {
-    this.mCss = `width: 100px; height: 90px; font-size: 13px; position: absolute; top: ${y}px; left: ${x}px; z-index: 1000; border: 1px solid #eeeeee; cursor: pointer;`
+    this.mCss = `width: 100px; height: 90px; font-size: 13px; position: absolute; top: ${y}px; left: ${x}px; z-index: 1000; border: 1px solid #999999; cursor: pointer;background: #eeeeee;`
     this.displayM = true;
   }
 
@@ -113,6 +125,11 @@ export default class MakePage extends Vue {
   handleML() {
     this.isDrag = false;
     // this.makePageApplication.handleSelect(e.clientX - this.listW, e.clientY, "over")
+  }
+
+
+  doMakeCode() {
+    this.makePageApplication.makeCode()
   }
 
 }

@@ -34,6 +34,7 @@ interface elementObj {
     cssObj: any
     context: Vue
     del: boolean
+    zIndex: number
 }
 
 
@@ -61,6 +62,7 @@ interface canvasWH {
 let isTop: number = 0
 
 
+
 export class MakePageApplication implements MakePageAppInterface {
     constructor(context: Vue) {
         this.context = context;
@@ -79,6 +81,13 @@ export class MakePageApplication implements MakePageAppInterface {
 
     clickX: number = 0;
     clickY: number = 0;
+
+
+    makeCode() {
+        this.translatorService.createCode({elementList: this.elementArr, fileName: "myFirst"});
+
+    }
+
 
 
     setSelectedType() {
@@ -114,7 +123,7 @@ export class MakePageApplication implements MakePageAppInterface {
     }
 
     mountDone(x: number, y: number, context: Vue) {
-        let obj: elementObj = {nowX: x, nowY: y, context, cssObj: {}, del: false}
+        let obj: elementObj = {nowX: x, nowY: y, context, cssObj: {}, del: false, zIndex: 0}
         this.elementArr.push(obj);
         let dom: HTMLElement | null = document.getElementById("page-area");
         let newContainer: HTMLElement = document.createElement("div");
@@ -396,7 +405,7 @@ export class MakePageApplication implements MakePageAppInterface {
     }
 
 
-    handleSelect(x: number, y: number, mode: string) {
+    handleSelect(x: number, y: number, mode: string, setTop?: boolean, setBottom?: boolean) {
         let onHitCount = 0;
         if (mode === "click") {
             isTop = 0;
@@ -454,6 +463,12 @@ export class MakePageApplication implements MakePageAppInterface {
                 }
                 if (onHitCount !== this.canvasArr.length) {
                     this.canvasArr[isTop].selected = true;
+                    if (setTop) {
+                        this.setTop(isTop);
+                    }
+                    if (setBottom) {
+                        this.setBottom(isTop)
+                    }
                 }
                 this.clickX = x;
                 this.clickY = y;
@@ -461,6 +476,53 @@ export class MakePageApplication implements MakePageAppInterface {
             }
         }
     }
+
+    setBottom(elementArrKey: number) {
+
+        let setMin = 0;
+        for (let i = 0; i < this.elementArr.length; i ++) {
+            if (setMin > this.elementArr[i].zIndex) {
+                setMin = this.elementArr[i].zIndex;
+            }
+        }
+
+        let cssObj: any
+        this.elementArr[elementArrKey].zIndex = setMin - 1;
+        cssObj = this.setComponentAttribut(this.elementArr[elementArrKey].context, "z-index", setMin - 1);
+        this.elementArr[elementArrKey].cssObj = cssObj;
+
+        let nowElement = this.elementArr[elementArrKey];
+        let nowCanvas = this.canvasArr[elementArrKey];
+        this.elementArr.splice(elementArrKey, 1);
+        this.elementArr.unshift(nowElement)
+        this.canvasArr.splice(elementArrKey, 1);
+        this.canvasArr.unshift(nowCanvas);
+
+    }
+
+
+    setTop(elementArrKey: number) {
+        let setMax = 0;
+        for (let i = 0; i < this.elementArr.length; i ++) {
+            if (setMax < this.elementArr[i].zIndex) {
+                setMax = this.elementArr[i].zIndex;
+            }
+        }
+        this.elementArr[elementArrKey].zIndex = setMax + 1;
+        let cssObj: any
+        cssObj = this.setComponentAttribut(this.elementArr[elementArrKey].context, "z-index", this.elementArr[elementArrKey].zIndex);
+        this.elementArr[elementArrKey].cssObj = cssObj;
+        let nowElement = this.elementArr[elementArrKey];
+        let nowCanvas = this.canvasArr[elementArrKey];
+        this.elementArr.splice(elementArrKey, 1);
+        this.elementArr[this.elementArr.length] = nowElement;
+        this.canvasArr.splice(elementArrKey, 1);
+        this.canvasArr[this.canvasArr.length] = nowCanvas;
+
+    }
+
+
+
 
 
     renderCanvas() {
