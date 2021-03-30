@@ -7,6 +7,8 @@ import {
 } from "@/infrastructure/customComponents/customComponents";
 
 
+
+
 interface MakePageAppInterface {
     setSelectedType(typeObj: TranslatorTypeList): void
 
@@ -28,7 +30,7 @@ interface MakePageAppInterface {
     elementArr: elementObj[]
 }
 
-interface elementObj {
+export interface elementObj {
     nowX: number | undefined
     nowY: number | undefined
     cssObj: any
@@ -70,6 +72,7 @@ export class MakePageApplication implements MakePageAppInterface {
 
     translatorService: TranslatorService = new TranslatorService();
     customComponentsConfig: CustomComponentsConfig = new CustomComponentsConfig();
+
     cache: Cache = new Cache();
     context: Vue
     customComponentsContext: any = {};
@@ -146,6 +149,7 @@ export class MakePageApplication implements MakePageAppInterface {
         let h = parseInt(cssObj.height.replace("px", ""))
         console.log(cssObj);
         this.addCanvasList(left, top, w, h)
+        this.showConfigPage(this.elementArr.length - 1);
 
         setInterval(() => {
             this.renderCanvas();
@@ -473,9 +477,28 @@ export class MakePageApplication implements MakePageAppInterface {
                 this.clickX = x;
                 this.clickY = y;
 
+                if (this.canvasArr[isTop].selected) {
+                    this.showConfigPage(isTop);
+                }
+                else {
+                    this.hideConfigPage();
+                }
             }
         }
     }
+
+
+    showConfigPage(key: number) {
+        const ref: any = this.context.$refs.configPage;
+        ref.configPageApplication.showConfig(this.elementArr[key]);
+
+    }
+
+    hideConfigPage() {
+        const ref: any = this.context.$refs.configPage;
+        ref.configPageApplication.hideConfig();
+    }
+
 
     setBottom(elementArrKey: number) {
 

@@ -1,4 +1,4 @@
-import {TranslatorConfig} from "./translatorConfig"
+import {TranslatorConfig, TranslatorElementConfig} from "./translatorConfig"
 
 export enum TranslatorType {
     mini,
@@ -26,5 +26,7 @@ export interface TranslatorCore {
     createCode(translatorConfig: TranslatorConfig): void
 
     getNowSelectedType(): TranslatorType | null
+
+    createElementBehavior(attributes: any): TranslatorElementConfig
 }
 

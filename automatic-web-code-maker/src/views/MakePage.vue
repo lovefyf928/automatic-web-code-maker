@@ -23,6 +23,7 @@
       </div>
     </div>
     <button style="width: 100px; height: 60px; background: skyblue; position: absolute; bottom: 10px; right: 20px; z-index: 9999" @click="doMakeCode">生成</button>
+    <config-page ref="configPage" style="z-index: 10000"></config-page>
   </div>
 </template>
 
@@ -30,10 +31,12 @@
 import {MakePageApplication} from "@/application/makePage/makePage";
 import Vue from "vue";
 import Component from "vue-class-component"
+import ConfigPage from "./module/ConfigPage.vue"
 
 
 @Component({
   name: "MakePage",
+  components: {ConfigPage}
 })
 export default class MakePage extends Vue {
   private makePageApplication: MakePageApplication = new MakePageApplication(this)

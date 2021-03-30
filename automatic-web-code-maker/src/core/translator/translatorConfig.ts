@@ -3,6 +3,18 @@ export interface TranslatorConfig {
     fileName: string
 }
 
+interface event {
+    eventName: string
+    eventFn: Function
+}
 
+interface elementAtt {
+    elementAttName: string
+    elementAttVal: string
+}
 
+export interface TranslatorElementConfig {
+    event: event[]
+    elementAtt: elementAtt[]
+}
 

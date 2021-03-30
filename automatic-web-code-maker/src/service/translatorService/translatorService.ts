@@ -1,4 +1,10 @@
-import {TranslatorConfig, TranslatorCore, TranslatorType, TranslatorTypeList} from "@/core/translator/index"
+import {
+    TranslatorConfig,
+    TranslatorCore,
+    TranslatorElementConfig,
+    TranslatorType,
+    TranslatorTypeList
+} from "@/core/translator/index"
 
 
 export class TranslatorService implements TranslatorCore{
@@ -19,6 +25,13 @@ export class TranslatorService implements TranslatorCore{
 
     getNowSelectedType(): TranslatorType | null {
         return this.selectedType
+    }
+
+
+    createElementBehavior(attributes: any): TranslatorElementConfig {
+        let obj: TranslatorElementConfig = {event: [], elementAtt: []}
+
+        return obj
     }
 
 
