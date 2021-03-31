@@ -6,7 +6,7 @@
         <span>{{tmp.text}}</span>
       </div>
     </div>
-    <div @keydown="handleKeyDown" id="page-area" >
+    <div style="outline: none" tabindex="1" @keydown="handleKeyDown" id="page-area" >
       <canvas id="my-canvas" style="width: 100%; height: 100%; position: absolute; left: 0; top: 0; z-index: 998" :width="makePageApplication.canvasObj.w" :height="makePageApplication.canvasObj.h"></canvas>
       <canvas @click="closeMyM" @contextmenu.prevent @click.right="handleRightClick" @mouseleave="handleML" @mousemove="handleMM" @mouseup="handleMU" @mousedown="handleMD"  id="my-canvasr" style="width: 100%; height: 100%; position: absolute; left: 0; top: 0; z-index: 999" :width="makePageApplication.canvasObj.w" :height="makePageApplication.canvasObj.h"></canvas>
       <div id="mount-box"></div>
@@ -22,7 +22,7 @@
         </div>
       </div>
     </div>
-    <button style="width: 100px; height: 60px; background: skyblue; position: absolute; bottom: 10px; right: 20px; z-index: 9999" @click="doMakeCode">生成</button>
+    <a-button style="width: 100px; height: 60px; position: absolute; bottom: 10px; right: 20px; z-index: 9999" @click="doMakeCode">生成</a-button>
     <config-page ref="configPage" style="z-index: 10000"></config-page>
   </div>
 </template>
@@ -61,7 +61,7 @@ export default class MakePage extends Vue {
     window.onresize = () => {
       this.makePageApplication.getMainContainerWH()
     }
-    window.addEventListener("keydown", this.handleKeyDown);
+    // window.addEventListener("keydown", this.handleKeyDown);
   }
 
   setTop() {
@@ -101,7 +101,7 @@ export default class MakePage extends Vue {
     if (e.clientX - this.listW >= 0) {
       let nowComponent: Vue = this.makePageApplication.loadComponent(item.id, item.text);
       nowComponent.$mount("#mount-box")
-      this.makePageApplication.mountDone(e.clientX - this.listW, e.clientY, nowComponent)
+      this.makePageApplication.mountDone(e.clientX - this.listW, e.clientY, nowComponent, item.id);
     }
   }
 

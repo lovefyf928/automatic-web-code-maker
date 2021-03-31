@@ -19,7 +19,6 @@ export function MyInput() {
         },
         render(createElement): VNode {
             if (this.showElement) {
-                console.log(1);
                 return createElement(
                     "label",
                     [
