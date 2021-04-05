@@ -13,8 +13,3 @@ interface elementAtt {
     elementAttVal: string
 }
 
-export interface TranslatorElementConfig {
-    event: event[]
-    elementAtt: elementAtt[]
-}
-

@@ -1,7 +1,7 @@
 import {elementObj} from "@/application/makePage/makePage";
 
 interface ConfigPageInterface {
-    showConfig(nowElement: elementObj): void
+    showConfig(nowElement: elementObj[], key: number): void
     hideConfig(): void
     display: boolean
     pageConfig: configObj
@@ -12,8 +12,8 @@ interface ConfigPageInterface {
 }
 
 
-interface configObj {
-    name: string
+export interface configObj {
+    innerText: string
     event: event[]
     att: att[]
     requestConfig: requestConfig
@@ -26,7 +26,7 @@ interface requestConfig {
     codeName: string
     renderName: string
     callEvent: string
-    renderElementName: string
+    renderElementStr: string
 }
 
 interface event {
@@ -39,7 +39,12 @@ interface att {
     attType: string
     attName: string
     attVal: string
+    displayAttName: boolean
 }
+
+
+let nowElementArr: elementObj[]
+let nowKey: number
 
 
 export class ConfigPageApplication implements ConfigPageInterface{
@@ -49,15 +54,23 @@ export class ConfigPageApplication implements ConfigPageInterface{
 
     private context: Vue
 
-    pageConfig: configObj = {name: "", event: [], att: [], requestConfig: {requestPath: "", renderElementName: "", renderName: "", callEvent: "", codeName: ""}}
+    pageConfig: configObj = {innerText: "", event: [], att: [], requestConfig: {requestPath: "", renderElementStr: "", renderName: "", callEvent: "", codeName: ""}}
 
     display: boolean = false
 
 
-    showConfig(nowElement: elementObj) {
+    showConfig(elementArr: elementObj[], key: number) {
         this.display = true;
         // console.log(nowElement);
-        this.changeOption(nowElement.componentId);
+        this.pageConfig = elementArr[key].configObj
+        // this.changeOption(elementArr[key].componentId);
+        nowElementArr = elementArr
+        nowKey = key;
+    }
+
+
+    changeAttDisplay(key: number, val: boolean): void {
+        this.pageConfig.att[key].displayAttName = val;
     }
 
 
@@ -67,7 +80,6 @@ export class ConfigPageApplication implements ConfigPageInterface{
     }
 
     addEvent(): void {
-        console.log(this.pageConfig.name);
         this.pageConfig.event.push({
             eventName: "",
             eventModifier: "",
@@ -88,7 +100,8 @@ export class ConfigPageApplication implements ConfigPageInterface{
         this.pageConfig.att.push({
             attType: "",
             attName: "",
-            attVal: ""
+            attVal: "",
+            displayAttName: true
         });
     }
 

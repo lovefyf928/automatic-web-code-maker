@@ -5,6 +5,8 @@ import {
     CustomComponentsConfig,
     CustomComponentsIconInterface
 } from "@/infrastructure/customComponents/customComponents";
+import {getObjValByKey} from "@/common/myApi";
+import {configObj} from "@/application/makePage/module/configPage";
 
 
 
@@ -37,7 +39,8 @@ export interface elementObj {
     context: Vue
     del: boolean
     zIndex: number
-    componentId: number
+    componentId: number,
+    configObj: configObj
 }
 
 
@@ -89,7 +92,6 @@ export class MakePageApplication implements MakePageAppInterface {
 
     makeCode() {
         this.translatorService.createCode({elementList: this.elementArr, fileName: "myFirst"});
-
     }
 
 
@@ -123,11 +125,10 @@ export class MakePageApplication implements MakePageAppInterface {
     loadComponent(id: number, text: string) {
         this.customComponentsContext[text] = this.customComponentsConfig.getComponentVNodeById(id)
         return this.customComponentsContext[text];
-
     }
 
     mountDone(x: number, y: number, context: Vue, componentId: number) {
-        let obj: elementObj = {nowX: x, nowY: y, context, cssObj: {}, del: false, zIndex: 0, componentId}
+        let obj: elementObj = {nowX: x, nowY: y, context, cssObj: {}, del: false, zIndex: 0, componentId, configObj: {innerText: "", event: [], att: [], requestConfig: {requestPath: "", renderElementStr: "", renderName: "", callEvent: "", codeName: ""}}}
         this.elementArr.push(obj);
         let dom: HTMLElement | null = document.getElementById("page-area");
         let newContainer: HTMLElement = document.createElement("div");
@@ -491,7 +492,7 @@ export class MakePageApplication implements MakePageAppInterface {
 
     showConfigPage(key: number) {
         const ref: any = this.context.$refs.configPage;
-        ref.configPageApplication.showConfig(this.elementArr[key]);
+        ref.configPageApplication.showConfig(this.elementArr, key);
 
     }
 

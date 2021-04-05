@@ -7,11 +7,12 @@
       width="300px"
   >
 
+
     <div>
-      <h3>名称:</h3>
+      <h3>元素内内容:</h3>
       <div>
         <div>
-          <a-input v-model="configPageApplication.pageConfig.name" placeholder="请输入赋值元素的名称(如需要给当前元素赋值)"></a-input>
+          <a-input v-model="configPageApplication.pageConfig.innerText" placeholder="请输入元素内内容({{}}绑定数据)"></a-input>
         </div>
       </div>
     </div>
@@ -26,9 +27,9 @@
         <div style="width: 208px">
           <a-select v-model="tmp.eventType" placeholder="请选择事件类型" :getPopupContainer="triggerNode => triggerNode.parentNode" style="width: 100%; margin-bottom: 10px">
             <a-select-option value="">请选择事件类型</a-select-option>
-            <a-select-option value="1">click</a-select-option>
-            <a-select-option value="2">click</a-select-option>
-            <a-select-option value="3">click</a-select-option>
+            <a-select-option value="@click">click</a-select-option>
+            <a-select-option value="@change">change</a-select-option>
+            <a-select-option value="@input">input</a-select-option>
           </a-select>
           <a-select v-model="tmp.eventModifier" placeholder="请选择事件修饰符" :getPopupContainer="triggerNode => triggerNode.parentNode" style="width: 100%; margin-bottom: 10px">
             <a-select-option value="">请选择事件修饰符</a-select-option>
@@ -53,11 +54,12 @@
       </div>
       <div v-else v-for="(tmp, key) in configPageApplication.pageConfig.att" style="display: flex; align-items: center; justify-content: space-between; margin-top: 20px">
         <div style="width: 208px">
-          <a-select v-model="tmp.attType" placeholder="请选择属性类型" :getPopupContainer="triggerNode => triggerNode.parentNode" style="width: 100%; margin-bottom: 10px">
+          <a-select @change="handleChangeAttType($event, key)" v-model="tmp.attType" placeholder="请选择属性类型" :getPopupContainer="triggerNode => triggerNode.parentNode" style="width: 100%; margin-bottom: 10px">
             <a-select-option value="">正常</a-select-option>
             <a-select-option value=":">:</a-select-option>
+            <a-select-option value="v-model">v-model</a-select-option>
           </a-select>
-          <a-input v-model="tmp.attName" style="margin-bottom: 10px" placeholder="请输入属性名"></a-input>
+          <a-input v-if="tmp.displayAttName" v-model="tmp.attName" style="margin-bottom: 10px" placeholder="请输入属性名"></a-input>
           <a-input v-model="tmp.attVal" placeholder="请输入属性值"></a-input>
         </div>
         <a-button v-if="configPageApplication.pageConfig.att.length - 1 === key" @click="addAtt" type="primary" shape="circle" icon="plus" />
@@ -78,12 +80,7 @@
               <a-select-option value="mounted">页面加载</a-select-option>
               <a-select-option value="@click">click</a-select-option>
             </a-select>
-            <a-select v-model="configPageApplication.pageConfig.requestConfig.renderElementName" placeholder="请选择赋值元素" :getPopupContainer="triggerNode => triggerNode.parentNode" style="width: 100%; margin-bottom: 10px">
-              <a-select-option value="">请选择赋值元素</a-select-option>
-              <a-select-option value="1">click</a-select-option>
-              <a-select-option value="2">click</a-select-option>
-              <a-select-option value="3">click</a-select-option>
-            </a-select>
+            <a-input v-model="configPageApplication.pageConfig.requestConfig.renderElementStr" placeholder="请输入其他元素赋值字符串"></a-input>
           </div>
         </div>
       </div>
@@ -102,9 +99,21 @@ import {ConfigPageApplication} from "@/application/makePage/module/configPage";
 export default class ConfigPage extends Vue {
   public configPageApplication: ConfigPageApplication = new ConfigPageApplication(this);
 
+
+
   addEvent() {
     this.configPageApplication.addEvent();
   }
+
+  handleChangeAttType(e: string, key: number) {
+    if (e === "v-model") {
+      this.configPageApplication.changeAttDisplay(key, false);
+    }
+    else {
+      this.configPageApplication.changeAttDisplay(key, true);
+    }
+  }
+
 
   delEvent(key: number) {
     this.configPageApplication.delEvent(key);
