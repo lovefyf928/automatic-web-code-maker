@@ -1,5 +1,5 @@
 import {TranslatorCore, TranslatorType, TranslatorTypeList} from "@/core/translator/translator.ts"
-import {TranslatorConfig, TranslatorElementConfig} from "@/core/translator/translatorConfig.ts";
+import {TranslatorConfig} from "@/core/translator/translatorConfig.ts";
 
 
 export {
@@ -7,5 +7,4 @@ export {
     TranslatorConfig,
     TranslatorType,
     TranslatorTypeList,
-    TranslatorElementConfig
 }

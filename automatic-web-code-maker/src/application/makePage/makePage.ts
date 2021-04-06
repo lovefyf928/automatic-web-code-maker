@@ -128,7 +128,7 @@ export class MakePageApplication implements MakePageAppInterface {
     }
 
     mountDone(x: number, y: number, context: Vue, componentId: number) {
-        let obj: elementObj = {nowX: x, nowY: y, context, cssObj: {}, del: false, zIndex: 0, componentId, configObj: {innerText: "", event: [], att: [], requestConfig: {requestPath: "", renderElementStr: "", renderName: "", callEvent: "", codeName: ""}}}
+        let obj: elementObj = {nowX: x, nowY: y, context, cssObj: {}, del: false, zIndex: 0, componentId, configObj: {innerText: "", event: [], att: [], requestConfig: {requestPath: "", renderElementStr: "", renderName: "", callEvent: "", codeName: "", requestData: "", requestMethod: ""}}}
         this.elementArr.push(obj);
         let dom: HTMLElement | null = document.getElementById("page-area");
         let newContainer: HTMLElement = document.createElement("div");

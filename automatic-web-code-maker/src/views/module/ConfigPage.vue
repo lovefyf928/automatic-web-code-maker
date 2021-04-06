@@ -72,13 +72,19 @@
       <div style="display: flex; align-items: center; justify-content: space-between">
         <div>
           <a-input v-model="configPageApplication.pageConfig.requestConfig.requestPath" style="margin-bottom: 10px" placeholder="请输入接口地址"></a-input>
+          <a-select v-model="configPageApplication.pageConfig.requestConfig.requestMethod" placeholder="请选择请求方法" :getPopupContainer="triggerNode => triggerNode.parentNode" style="width: 100%; margin-bottom: 10px">
+            <a-select-option value="">请选择请求方法</a-select-option>
+            <a-select-option value="get">get</a-select-option>
+            <a-select-option value="post">post</a-select-option>
+          </a-select>
+          <a-input v-model="configPageApplication.pageConfig.requestConfig.requestData" style="margin-bottom: 10px" placeholder="请输入请求参数(json)"></a-input>
           <a-input v-model="configPageApplication.pageConfig.requestConfig.codeName" style="margin-bottom: 10px" placeholder="请输入状态码字段名"></a-input>
           <a-input v-model="configPageApplication.pageConfig.requestConfig.renderName" style="margin-bottom: 10px" placeholder="请输入回填字段名(如没有接口地址默认从全局接口取值)"></a-input>
           <div>
             <a-select v-model="configPageApplication.pageConfig.requestConfig.callEvent" placeholder="请选择调用条件" :getPopupContainer="triggerNode => triggerNode.parentNode" style="width: 100%; margin-bottom: 10px">
               <a-select-option value="">请选择调用条件</a-select-option>
               <a-select-option value="mounted">页面加载</a-select-option>
-              <a-select-option value="@click">click</a-select-option>
+              <a-select-option value="click">click</a-select-option>
             </a-select>
             <a-input v-model="configPageApplication.pageConfig.requestConfig.renderElementStr" placeholder="请输入其他元素赋值字符串"></a-input>
           </div>

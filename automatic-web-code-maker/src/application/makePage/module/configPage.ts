@@ -27,6 +27,8 @@ interface requestConfig {
     renderName: string
     callEvent: string
     renderElementStr: string
+    requestMethod: string,
+    requestData: string
 }
 
 interface event {
@@ -54,7 +56,7 @@ export class ConfigPageApplication implements ConfigPageInterface{
 
     private context: Vue
 
-    pageConfig: configObj = {innerText: "", event: [], att: [], requestConfig: {requestPath: "", renderElementStr: "", renderName: "", callEvent: "", codeName: ""}}
+    pageConfig: configObj = {innerText: "", event: [], att: [], requestConfig: {requestPath: "", renderElementStr: "", renderName: "", callEvent: "", codeName: "", requestMethod: "", requestData: ""}}
 
     display: boolean = false
 

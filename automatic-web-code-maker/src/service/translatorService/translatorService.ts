@@ -1,7 +1,6 @@
 import {
     TranslatorConfig,
     TranslatorCore,
-    TranslatorElementConfig,
     TranslatorType,
     TranslatorTypeList
 } from "@/core/translator/index"
@@ -31,8 +30,42 @@ export class TranslatorService implements TranslatorCore{
 
 
 
-    private createRequestStr(requestPath: string, requestMethod: string, requestData: string, codeName: string, renderElementStr: string): string {
+
+    private createRequestStr(requestPath: string, requestMethod: string, requestData: string, codeName: string, renderName: string, renderElementStr: string, fnName: string, fnType: string): string {
+        let otherElementStr = "";
+        let renderElementArr = renderElementStr.split(",");
+        for (let i = 0; i < renderElementArr.length; i ++) {
+            otherElementStr += `this["${renderElementArr[i].split(":")[0]}"] = getObjValByKey("${renderElementArr[i].split(":")[1]}", res)[0];`
+        }
         let str: string = "";
+        if (fnType === "mounted") {
+            str = `
+            (async () => {
+                let res = await request("${requestPath}", "${requestMethod}", ${requestData});
+                   if (getObjValByKey("${codeName}", res)[0] === 200) {
+                    this["${renderName.split(":")[0]}"] = getObjValByKey("${renderName.split(":")[1]}", res)[0];
+                    ${otherElementStr}
+                }
+                else {
+                    console.log("请求失败");
+                }
+            })()
+        `;
+        }
+        else {
+            str = `
+              async ${fnName}(){
+                let res = await request("${requestPath}", "${requestMethod}", ${requestData});
+                   if (getObjValByKey("${codeName}", res)[0] === 200) {
+                    this["${renderName.split(":")[0]}"] = getObjValByKey("${renderName.split(":")[1]}", res)[0];
+                    ${otherElementStr}
+                }
+                else {
+                    console.log("请求失败");
+                }
+            },
+        `;
+        }
         return str
     }
 
@@ -54,15 +87,22 @@ export class TranslatorService implements TranslatorCore{
             console.log(spInnerHtmlArr);
             for (let j = 0; j < translatorConfig.elementList[i].configObj.att.length; j ++) {
                 let nowAtt = translatorConfig.elementList[i].configObj.att[j];
-                spInnerHtmlArr.unshift(nowAtt.attType + nowAtt.attName + "=" + "\"" + nowAtt.attVal + "\"");
+                if (nowAtt.attName !== "") {
+                    spInnerHtmlArr.unshift(nowAtt.attType + nowAtt.attName + "=" + "\"" + nowAtt.attVal + "\"");
+                }
                 if (nowAtt.attType !== "") {
                     dataArr.push(nowAtt.attVal);
                 }
             }
             for (let j = 0; j < translatorConfig.elementList[i].configObj.event.length; j ++) {
                 let nowEvent = translatorConfig.elementList[i].configObj.event[j];
-                spInnerHtmlArr.unshift(nowEvent.eventType + nowEvent.eventModifier + "=" + "\"" + nowEvent.eventName + "\"");
-                methodArr.push(nowEvent.eventName);
+                if (nowEvent.eventName !== "") {
+                    spInnerHtmlArr.unshift(nowEvent.eventType + nowEvent.eventModifier + "=" + "\"" + nowEvent.eventName + "\"");
+                    methodArr.push(nowEvent.eventName);
+                }
+            }
+            if (translatorConfig.elementList[i].configObj.requestConfig.callEvent === "click") {
+                spInnerHtmlArr.unshift("@click=\"" + ("requestFn" + i) + "\"");
             }
             nowInnerHtml = nowElementHeader + " ";
             for (let j = 0; j < spInnerHtmlArr.length; j ++) {
@@ -87,7 +127,22 @@ export class TranslatorService implements TranslatorCore{
                 str = str.replace("}}", "");
                 dataArr.push(str)
             }
+            console.log(translatorConfig.elementList);
+            let reqConfig = translatorConfig.elementList[i].configObj.requestConfig;
+            if (reqConfig.callEvent === "mounted") {
+                mountedMethodStr += this.createRequestStr(reqConfig.requestPath, reqConfig.requestMethod, reqConfig.requestData, reqConfig.codeName, reqConfig.renderName, reqConfig.renderElementStr, "requestFn" + i, reqConfig.callEvent)
+            }
+            else if (reqConfig.callEvent === "click") {
+                methodStr += this.createRequestStr(reqConfig.requestPath, reqConfig.requestMethod, reqConfig.requestData, reqConfig.codeName, reqConfig.renderName, reqConfig.renderElementStr, "requestFn" + i, reqConfig.callEvent);
+            }
             this.htmlTemp += nowInnerHtml;
+        }
+
+        for (let i = 0; i < dataArr.length; i ++) {
+            dataStr += `${dataArr[i]}: null,`
+        }
+        for (let i = 0; i < methodArr.length; i ++) {
+            methodStr += `${methodArr[i]}() {},`
         }
 
 
@@ -105,6 +160,25 @@ ${this.htmlTemp}
 </html>
 
 <script>
+
+function getObjValByKey(findKey, dataObj) {
+    let findArr = [];
+    for (let key in dataObj) {
+        if (key === findKey) {
+            findArr.push(dataObj[key]);
+        }
+        if (Object.prototype.toString.call(dataObj[key]) === "[object Object]") {
+            let arr = getObjValByKey(findKey, dataObj[key])
+            for (let i = 0; i < arr.length; i ++) {
+                findArr.push(arr[i]);
+            }
+        }
+    }
+    return findArr;
+}
+
+
+
     export default {
         name: "test",
         data() {
@@ -130,6 +204,23 @@ ${this.htmlTemp}
 </template>
 
 <script>
+function getObjValByKey(findKey, dataObj) {
+    let findArr = [];
+    for (let key in dataObj) {
+        if (key === findKey) {
+            findArr.push(dataObj[key]);
+        }
+        if (Object.prototype.toString.call(dataObj[key]) === "[object Object]") {
+            let arr = getObjValByKey(findKey, dataObj[key])
+            for (let i = 0; i < arr.length; i ++) {
+                findArr.push(arr[i]);
+            }
+        }
+    }
+    return findArr;
+}
+
+
     export default {
         name: "test",
         data() {
