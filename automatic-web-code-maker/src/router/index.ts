@@ -5,7 +5,7 @@ Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
   {
-    path: '/',
+    path: '/index',
     name: 'Index',
     component: () => import("../views/Index.vue")
   },
@@ -13,6 +13,11 @@ const routes: Array<RouteConfig> = [
     path: "/make-page",
     name: "MakePage",
     component: () => import("../views/MakePage.vue")
+  },
+  {
+    path: "/",
+    name: "CoreConfig",
+    component: () => import("../views/ddd/CoreConfig.vue")
   }
 ]
 

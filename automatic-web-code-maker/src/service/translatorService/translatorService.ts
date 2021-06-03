@@ -1,16 +1,11 @@
-import {
-    TranslatorConfig,
-    TranslatorCore,
-    TranslatorType,
-    TranslatorTypeList
-} from "@/core/translator/index"
+import {TranslatorConfig, TranslatorCore, TranslatorType, TranslatorTypeList} from "@/core/translator/index"
 
 
 export class TranslatorService implements TranslatorCore{
 
     selectedType: TranslatorType | null = null
 
-    typeList: TranslatorTypeList[] = [{name: "小程序", type: TranslatorType.mini}, {name: "网页", type: TranslatorType.web}, {name: "手机端网页", type: TranslatorType.phoneWeb}]
+    typeList: TranslatorTypeList[] = [{name: "小程序", type: TranslatorType.mini}, {name: "网页", type: TranslatorType.web}, {name: "手机端网页", type: TranslatorType.phoneWeb}, {name: "CINS", type: TranslatorType.ddd}]
 
     htmlTemp: string = ""
 
@@ -18,6 +13,7 @@ export class TranslatorService implements TranslatorCore{
     getTranslatorType(): TranslatorTypeList[] {
         return this.typeList;
     }
+
 
     selectTranslatorType(type: TranslatorType): void {
         this.selectedType = type;

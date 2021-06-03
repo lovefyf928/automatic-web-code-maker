@@ -4,13 +4,16 @@ import {TranslatorConfig} from "./translatorConfig"
 export enum TranslatorType {
     mini, // 小程序
     web, // 网页
-    phoneWeb // 手机端网页
+    phoneWeb ,// 手机端网页
+    ddd
 }
 
 export interface TranslatorTypeList {
     name: string
     type: TranslatorType
 }
+
+
 
 
 

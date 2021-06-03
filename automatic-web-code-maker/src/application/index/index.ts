@@ -19,7 +19,7 @@ export class IndexApplication implements IndexAppInterface{
     translatorService: TranslatorService = new TranslatorService();
 
     jumpToMakePage(typeObj: any): void {
-        this.context.$router.push({name: "MakePage", params: typeObj});
+        this.context.$router.push({name: "CoreConfig", params: typeObj});
     }
 
     getSelectTypes(): any[] {

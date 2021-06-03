@@ -23,7 +23,7 @@ export default class Index extends Vue {
 
 
   mounted() {
-    this.typeList = this.indexApplication.getSelectTypes()
+    this.typeList = this.indexApplication.getSelectTypes();
   }
   private handleClick(item: object) {
     this.indexApplication.jumpToMakePage(item);
@@ -46,7 +46,7 @@ export default class Index extends Vue {
 }
 
 .select-type-box{
-  width: 33%;
+  width: 25%;
   height: 100%;
   display: flex;
   align-items: center;
@@ -55,7 +55,7 @@ export default class Index extends Vue {
 }
 
 .select-type-box-selected {
-  width: 33%;
+  width: 25%;
   height: 100%;
   display: flex;
   align-items: center;
